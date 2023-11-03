@@ -1,0 +1,8 @@
+.*
+!.gitignore
+
+
+/local/
+/go/
+/isuumo/initial-data
+/isuumo/bench
