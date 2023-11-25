@@ -64,7 +64,7 @@ access-db:
 # 言語切替
 .PHONY: lan-change
 lan-change:
-	sudo systemctl disable --now $(BIN_NAME).go.service
+	sudo systemctl disable --now $(BIN_NAME)-go.service
 	sudo systemctl enable --now $(SERVICE_NAME)
 
 # 主要コマンドの構成要素 ------------------------
@@ -138,7 +138,7 @@ build:
 .PHONY: restart
 restart:
 	sudo systemctl daemon-reload
-	sudo systemctl restart $(BIN_NAME).nodejs.service
+	sudo systemctl restart $(SERVICE_NAME)
 	sudo systemctl restart mysql
 	sudo systemctl restart nginx
 
