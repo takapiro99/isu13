@@ -5,7 +5,7 @@ include env.sh
 
 # 問題によって変わる変数
 USER:=isucon
-BIN_NAME:=isucholar
+BIN_NAME:=isupipe
 BUILD_DIR:=/home/isucon/webapp/nodejs
 SERVICE_NAME:=$(BIN_NAME).nodejs.service
 
