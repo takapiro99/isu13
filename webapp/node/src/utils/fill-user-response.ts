@@ -16,6 +16,14 @@ export interface UserResponse {
   icon_hash: string;
 }
 
+// export interface UserModel {
+//   id: number;
+//   name: string;
+//   display_name: string;
+//   password: string;
+//   description: string;
+// }
+
 export const fillUserResponse = async (
   conn: PoolConnection,
   user: Omit<UserModel, "password">,
@@ -25,10 +33,6 @@ export const fillUserResponse = async (
     "SELECT * FROM themes WHERE user_id = ?",
     [user.id]
   );
-
-  // const [[icon]] = await conn.query<
-  //   (Pick<IconModel, 'image'> & RowDataPacket)[]
-  // >('SELECT image FROM icons WHERE user_id = ?', [user.id])
 
   let image;
   try {
