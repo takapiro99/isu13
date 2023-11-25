@@ -53,7 +53,7 @@ import fs = require("fs");
 
 import { createClient } from "redis";
 
-const rds = createClient();
+export const rds = createClient();
 rds.connect().catch((e) => {
   console.error(e);
   throw e;
