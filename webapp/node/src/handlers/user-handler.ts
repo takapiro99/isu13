@@ -42,7 +42,7 @@ export const getIconHandler = [
       let iconFile;
       try {
         iconFile = fs.readFileSync(userImageBasefilePath(user.id));
-      } catch (error) {
+      } catch (error: any) {
         if (error.code === "ENOENT") {
           console.error("File not found:", userImageBasefilePath(user.id));
         } else {
@@ -174,17 +174,16 @@ export const registerHandler = async (
   try {
     const [{ insertId: userId }] = await conn
       .execute<ResultSetHeader>(
-        "INSERT INTO users (name, display_name, description, password) VALUES(?, ?, ?, ?)",
-        [body.name, body.display_name, body.description, hashedPassword]
+        "INSERT INTO users (name, display_name, description, password, dark_mode) VALUES(?, ?, ?, ?, ?)",
+        [
+          body.name,
+          body.display_name,
+          body.description,
+          hashedPassword,
+          body.theme.dark_mode,
+        ]
       )
       .catch(throwErrorWith("failed to insert user"));
-
-    await conn
-      .execute("INSERT INTO themes (user_id, dark_mode) VALUES(?, ?)", [
-        userId,
-        body.theme.dark_mode,
-      ])
-      .catch(throwErrorWith("failed to insert user theme"));
 
     await c
       .get("runtime")
@@ -206,6 +205,7 @@ export const registerHandler = async (
         name: body.name,
         display_name: body.display_name,
         description: body.description,
+        dark_mode: body.theme.dark_mode,
       },
       c.get("runtime").fallbackUserIcon
     ).catch(throwErrorWith("failed to fill user"));

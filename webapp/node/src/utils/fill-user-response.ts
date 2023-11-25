@@ -16,19 +16,19 @@ export interface UserResponse {
   icon_hash: string;
 }
 
+// export interface UserModel {
+//   id: number;
+//   name: string;
+//   display_name: string;
+//   password: string;
+//   description: string;
+// }
+
 export const fillUserResponse = async (
   conn: PoolConnection,
   user: Omit<UserModel, "password">,
   getFallbackUserIcon: () => Promise<Readonly<ArrayBuffer>>
 ) => {
-  const [[theme]] = await conn.query<(ThemeModel & RowDataPacket)[]>(
-    "SELECT * FROM themes WHERE user_id = ?",
-    [user.id]
-  );
-
-  // const [[icon]] = await conn.query<
-  //   (Pick<IconModel, 'image'> & RowDataPacket)[]
-  // >('SELECT image FROM icons WHERE user_id = ?', [user.id])
 
   let image;
   try {
@@ -46,8 +46,9 @@ export const fillUserResponse = async (
     display_name: user.display_name,
     description: user.description,
     theme: {
-      id: theme.id,
-      dark_mode: !!theme.dark_mode,
+      id: user.id,
+      // dark_mode: !!theme.dark_mode,
+      dark_mode: !!user.dark_mode,
     },
     icon_hash: createHash("sha256").update(new Uint8Array(image)).digest("hex"),
   } satisfies UserResponse;
