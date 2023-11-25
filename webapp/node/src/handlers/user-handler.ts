@@ -174,7 +174,7 @@ export const registerHandler = async (
   try {
     const [{ insertId: userId }] = await conn
       .execute<ResultSetHeader>(
-        "INSERT INTO users (name, display_name, description, password) VALUES(?, ?, ?, ?, ?)",
+        "INSERT INTO users (name, display_name, description, password, dark_mode) VALUES(?, ?, ?, ?, ?)",
         [
           body.name,
           body.display_name,

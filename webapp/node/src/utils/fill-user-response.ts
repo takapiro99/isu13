@@ -45,7 +45,7 @@ export const fillUserResponse = async (
     theme: {
       id: user.id,
       // dark_mode: !!theme.dark_mode,
-      dark_mode: user.dark_mode,
+      dark_mode: !!user.dark_mode,
     },
     icon_hash: image
       ? createHash("sha256").update(new Uint8Array(image)).digest("hex")

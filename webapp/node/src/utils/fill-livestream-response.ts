@@ -37,12 +37,18 @@ export const fillLivestreamResponse = async (
   >("SELECT tag_id FROM livestream_tags WHERE livestream_id = ?", [
     livestream.id,
   ]);
-
-  // const tags: TagsModel[] = [];
-  const [tags] = await conn.query<(TagsModel & RowDataPacket)[]>(
-    "SELECT * FROM tags WHERE id IN (?)",
-    [livestreamTagIDs.map(({ tag_id }) => tag_id)]
-  );
+  console.log("livestreamTagIDs", livestreamTagIDs);
+  const ids = livestreamTagIDs.map(({ tag_id }) => tag_id);
+  console.log("ids", ids);
+  let tags: TagsModel[] = [];
+  if (ids.length) {
+    const [tagsResult] = await conn.query<(TagsModel & RowDataPacket)[]>(
+      "SELECT * FROM tags WHERE id IN (?)",
+      [ids]
+    );
+    tags = tagsResult;
+  }
+  console.log("tags", tags);
   // add owner and tag
   return {
     id: livestream.id,

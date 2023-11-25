@@ -64,7 +64,7 @@ export const getStreamerThemeHandler = [
 
       const themeResponse = {
         id: user.id,
-        dark_mode: user.dark_mode,
+        dark_mode: !!user.dark_mode,
       };
 
       return c.json(themeResponse);
