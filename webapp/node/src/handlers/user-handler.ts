@@ -64,8 +64,14 @@ export const getIconHandler = [
   },
 ];
 
-export const userImageBasefilePath = (userId): string =>
-  path.join(homeDirectory, "webapp", "user-images", `${userId.toString()}.jpg`);
+export const userImageDirectoryPath = path.join(
+  homeDirectory,
+  "webapp",
+  "user-images"
+);
+export const userImageBasefilePath = (userId: number): string => {
+  return path.join(userImageDirectoryPath, `${userId.toString()}.jpg`);
+};
 
 function saveBase64Image(base64String: string, userID: number) {
   const decodedData = Buffer.from(base64String, "base64"); // Base64データをデコード
