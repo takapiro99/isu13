@@ -51,6 +51,14 @@ import {
 } from "./handlers/user-handler";
 import fs = require("fs");
 
+import { createClient } from "redis";
+
+const rds = createClient();
+rds.connect().catch((e) => {
+  console.error(e);
+  throw e;
+});
+
 export const fallbackUserIconStatic = fs.readFileSync(
   join(__dirname, "../../img/NoImage.jpg")
 ).buffer;
@@ -152,6 +160,8 @@ app.post("/api/initialize", async (c) => {
         fs.unlinkSync(join(userImageDirectoryPath, file));
       }
     });
+    // delete all caches
+    rds.flushAll();
     return c.json({ language: "node" });
   } catch (error) {
     console.log("init.sh failed with");
