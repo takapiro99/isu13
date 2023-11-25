@@ -24,4 +24,4 @@ ALTER TABLE `livecomments` auto_increment = 1;
 ALTER TABLE `livestreams` auto_increment = 1;
 ALTER TABLE `users` auto_increment = 1;
 
-ALTER TABLE users ADD COLUMN `dark_mode` BOOLEAN NOT NULL;
+ALTER TABLE users ADD COLUMN `dark_mode` BOOLEAN NOT NULL IF NOT EXISTS;
