@@ -143,7 +143,7 @@ build:
 	npm install && npm run build
 
 .PHONY: restart
-restart:
+restart: rm-logs
 	sudo systemctl daemon-reload
 	sudo systemctl restart $(SERVICE_NAME)
 	sudo systemctl restart mysql
@@ -169,7 +169,7 @@ rm-logs:
 	sudo rm -f /var/log/mysql/mysql-slow.log
 
 .PHONY: discord
-discord:
+discord: alp slow-query
 	cd ~/log2discord && ./log2discord ~/local/logs/alp.log
 	cd ~/log2discord && ./log2discord ~/local/logs/pt-query-digest.log
 
