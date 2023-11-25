@@ -3,6 +3,7 @@ import { PoolConnection, RowDataPacket } from "mysql2/promise";
 import { IconModel, ThemeModel, UserModel } from "../types/models";
 import { userImageBasefilePath } from "../handlers/user-handler";
 import { readFileSync } from "node:fs";
+import { fallbackUserIconHashStatic, fallbackUserIconStatic } from "../main";
 
 export interface UserResponse {
   id: number;
@@ -36,10 +37,6 @@ export const fillUserResponse = async (
     image = readFileSync(filePath).buffer;
   } catch (error) {}
 
-  if (!image) {
-    image = await getFallbackUserIcon();
-  }
-
   return {
     id: user.id,
     name: user.name,
@@ -50,6 +47,8 @@ export const fillUserResponse = async (
       // dark_mode: !!theme.dark_mode,
       dark_mode: user.dark_mode,
     },
-    icon_hash: createHash("sha256").update(new Uint8Array(image)).digest("hex"),
+    icon_hash: image
+      ? createHash("sha256").update(new Uint8Array(image)).digest("hex")
+      : fallbackUserIconHashStatic,
   } satisfies UserResponse;
 };
