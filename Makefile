@@ -163,6 +163,18 @@ mv-logs:
 watch-service-log:
 	sudo journalctl -u $(SERVICE_NAME) -n30 -f
 
+.PHONY: watch-nginx
+watch-nginx:
+	sudo journalctl -u nginx.service -n30 -f
+
+.PHONY: watch-mysql
+watch-mysql:
+	sudo journalctl -u mysql.service -n30 -f
+
+.PHONY: watch-service-pdns
+watch-pdns:
+	sudo journalctl -u pdns.service -n30 -f
+
 .PHONY: rm-logs
 rm-logs:
 	sudo rm -f /var/log/nginx/access.log
