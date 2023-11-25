@@ -155,7 +155,7 @@ app.post("/api/initialize", async (c) => {
     });
     console.log("also initializing 3台目...");
     const out = execSync("curl -X POST http://192.168.0.13:8080/api/initialize");
-    console.log(out);
+    console.log(out.toString());
     return c.json({ language: "node" });
   } catch (error) {
     console.log("init.sh failed with");
