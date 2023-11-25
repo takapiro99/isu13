@@ -50,6 +50,7 @@ import {
   userImageDirectoryPath,
 } from "./handlers/user-handler";
 import fs = require("fs");
+import { execSync } from "child_process";
 
 export const fallbackUserIconStatic = fs.readFileSync(
   join(__dirname, "../../img/NoImage.jpg")
@@ -152,6 +153,14 @@ app.post("/api/initialize", async (c) => {
         fs.unlinkSync(join(userImageDirectoryPath, file));
       }
     });
+    if(process.env["ISUCON13_INIT_OTHER"] !== undefined){
+      console.log("also initializing 1台目...");
+      const out = execSync("curl -X POST http://192.168.0.11:8080/api/initialize");
+      console.log(out.toString());
+      // console.log("also initializing 3台目...");
+      // const out2 = execSync("curl -X POST http://192.168.0.13:8080/api/initialize");
+      // console.log(out2.toString());
+    }
     return c.json({ language: "node" });
   } catch (error) {
     console.log("init.sh failed with");
