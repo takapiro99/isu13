@@ -75,7 +75,6 @@ export const userImageBasefilePath = (userId: number): string => {
 
 function saveBase64Image(base64String: string, userID: number) {
   const decodedData = Buffer.from(base64String, "base64"); // Base64データをデコード
-  console.log(base64String);
 
   // ファイルの保存先パスを組み立て
   const filePath = userImageBasefilePath(userID);

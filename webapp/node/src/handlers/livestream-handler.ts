@@ -117,8 +117,6 @@ export const reserveLivestreamHandler = [
           )
           .catch(throwErrorWith("failed to insert livestream tag"));
       }
-      console.log("reserved hello tags");
-      console.log(body.tags);
       const response = await fillLivestreamResponse(
         conn,
         {
