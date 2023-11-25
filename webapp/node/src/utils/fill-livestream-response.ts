@@ -43,7 +43,7 @@ export const fillLivestreamResponse = async (
   // const tags: TagsModel[] = [];
   const [tags] = await conn.query<(TagsModel & RowDataPacket)[]>(
     "SELECT * FROM tags WHERE id IN (?)",
-    [ids]
+    [ids.join(",")]
   );
   console.log("tags", tags);
   // add owner and tag
