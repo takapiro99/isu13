@@ -41,15 +41,10 @@ export const getIconHandler = [
       // get user image
       let iconFile;
       try {
-        iconFile = fs.readFileSync(
-          path.join(userImageBasefilePath, `${user.id}.jpg`)
-        );
+        iconFile = fs.readFileSync(userImageBasefilePath(user.id));
       } catch (error) {
         if (error.code === "ENOENT") {
-          console.error(
-            "File not found:",
-            path.join(userImageBasefilePath, `${user.id}.jpg`)
-          );
+          console.error("File not found:", userImageBasefilePath(user.id));
         } else {
           console.error("Error reading file:", error.message);
         }
@@ -69,17 +64,18 @@ export const getIconHandler = [
   },
 ];
 
-const userImageBasefilePath = path.join(homeDirectory, "webapp", "user-images");
+export const userImageBasefilePath = (userId): string =>
+  path.join(homeDirectory, "webapp", "user-images", `${userId.toString()}.jpg`);
 
 function saveBase64Image(base64String: string, userID: number) {
   const decodedData = Buffer.from(base64String, "base64"); // Base64データをデコード
   console.log(base64String);
 
   // ファイルの保存先パスを組み立て
-  const filePath = path.join(userImageBasefilePath, `${userID.toString()}.jpg`);
+  const filePath = userImageBasefilePath(userID);
 
   // ファイルにデコードされたデータを書き込み
-  fs.writeFileSync(filePath, decodedData);
+  fs.writeFileSync(userImageBasefilePath(userID), decodedData);
   return filePath;
 }
 
