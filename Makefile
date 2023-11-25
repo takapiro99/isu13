@@ -6,8 +6,8 @@ include env.sh
 # 問題によって変わる変数
 USER:=isucon
 BIN_NAME:=isupipe
-BUILD_DIR:=/home/isucon/webapp/nodejs
-SERVICE_NAME:=$(BIN_NAME).nodejs.service
+BUILD_DIR:=/home/isucon/webapp/node
+SERVICE_NAME:=$(BIN_NAME)-node.service
 
 DB_PATH:=/etc/mysql
 NGINX_PATH:=/etc/nginx
