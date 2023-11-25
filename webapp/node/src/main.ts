@@ -50,6 +50,7 @@ import {
   userImageDirectoryPath,
 } from "./handlers/user-handler";
 import fs = require("fs");
+import { execSync } from "child_process";
 
 export const fallbackUserIconStatic = fs.readFileSync(
   join(__dirname, "../../img/NoImage.jpg")
@@ -152,6 +153,7 @@ app.post("/api/initialize", async (c) => {
         fs.unlinkSync(join(userImageDirectoryPath, file));
       }
     });
+    execSync("curl -X POST http://192.168.0.12:8080/api/initialize");
     return c.json({ language: "node" });
   } catch (error) {
     console.log("init.sh failed with");
