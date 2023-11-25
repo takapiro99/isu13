@@ -69,26 +69,17 @@ export const getIconHandler = [
   },
 ];
 
-const userImageBasefilePath = path.join(homeDirectory, "webapp");
+const userImageBasefilePath = path.join(homeDirectory, "webapp", "user-images");
 
 function saveBase64Image(base64String: string, userID: number) {
-  // Base64データの正規表現をチェック
-  const matches = base64String.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-  if (!matches || matches.length !== 3) {
-    throw new Error("Invalid base64 string format");
-  }
-  const fileExtension = matches[1].split("/")[1]; // 画像の拡張子を取得
-  const decodedData = Buffer.from(matches[2], "base64"); // Base64データをデコード
+  const decodedData = Buffer.from(base64String, "base64"); // Base64データをデコード
+  console.log(base64String);
 
   // ファイルの保存先パスを組み立て
-  const filePath = path.join(
-    userImageBasefilePath,
-    `${userID.toString()}.${fileExtension}`
-  );
+  const filePath = path.join(userImageBasefilePath, `${userID.toString()}.jpg`);
 
   // ファイルにデコードされたデータを書き込み
   fs.writeFileSync(filePath, decodedData);
-  // console.log(`Image saved at: ${filePath}`);
   return filePath;
 }
 

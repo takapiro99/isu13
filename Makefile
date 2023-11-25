@@ -169,3 +169,6 @@ discord:
 bench11: rm-logs restart alp slow-query build
 	git pull
 	cd ~/benchmarker/bin && ./benchmarker -target localhost:443 -tls
+
+# sudo systemctl status $(SERVICE_NAME)
+# sudo systemctl status isupipe-node.service
