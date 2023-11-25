@@ -18,6 +18,7 @@ export interface HonoEnvironment extends Env {
     session: Session
     session_key_rotation: boolean
     pool: Pool
+    poolTo3Daime: Pool
     runtime: ApplicationRuntime
   }
 }

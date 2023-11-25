@@ -167,7 +167,7 @@ export const registerHandler = async (
     .hashPassword(body.password)
     .catch(throwErrorWith("failed to generate hashed password"));
 
-  const conn = await c.get("pool").getConnection();
+  const conn = await c.get("poolTo3Daime").getConnection();
   await conn.beginTransaction();
 
   try {

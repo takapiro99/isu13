@@ -102,6 +102,15 @@ const pool = createPool({
   connectionLimit: 10,
 });
 
+export const poolTo3Daime = createPool({
+  user: "isucon2",
+  password: "isucon",
+  database: "isupipe",
+  host: "192.168.0.13",
+  port: 3306,
+  connectionLimit: 10,
+});
+
 if (!process.env["ISUCON13_POWERDNS_SUBDOMAIN_ADDRESS"]) {
   throw new Error(
     "envionment variable ISUCON13_POWERDNS_SUBDOMAIN_ADDRESS is not set"
@@ -133,6 +142,7 @@ app.use(
 );
 app.use("*", async (c, next) => {
   c.set("pool", pool);
+  c.set("poolTo3Daime", poolTo3Daime);
   c.set("runtime", applicationDeps);
   await next();
 });
@@ -153,9 +163,11 @@ app.post("/api/initialize", async (c) => {
         fs.unlinkSync(join(userImageDirectoryPath, file));
       }
     });
-    if(process.env["ISUCON13_INIT_OTHER"] !== undefined){
+    if (process.env["ISUCON13_INIT_OTHER"] !== undefined) {
       console.log("also initializing 1台目...");
-      const out = execSync("curl -X POST http://192.168.0.11:8080/api/initialize");
+      const out = execSync(
+        "curl -X POST http://192.168.0.11:8080/api/initialize"
+      );
       console.log(out.toString());
       // console.log("also initializing 3台目...");
       // const out2 = execSync("curl -X POST http://192.168.0.13:8080/api/initialize");
