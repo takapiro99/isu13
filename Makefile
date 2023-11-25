@@ -170,8 +170,8 @@ rm-logs:
 
 .PHONY: discord
 discord:
-	cd ~/local/log2discord && ./log2discord ~/local/logs/alp.log ~/local/logs/pt-query-digest.lo
-	cd ~/local/log2discord && ./log2discord ~/local/logs/pt-query-digest.lo
+	cd ~/log2discord && ./log2discord ~/local/logs/alp.log
+	cd ~/log2discord && ./log2discord ~/local/logs/pt-query-digest.log
 
 .PHONY: bench11
 bench11: rm-logs restart alp slow-query build
