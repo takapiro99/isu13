@@ -153,9 +153,14 @@ app.post("/api/initialize", async (c) => {
         fs.unlinkSync(join(userImageDirectoryPath, file));
       }
     });
-    console.log("also initializing 3台目...");
-    const out = execSync("curl -X POST http://192.168.0.13:8080/api/initialize");
-    console.log(out.toString());
+    if(process.env["ISUCON13_INIT_OTHER"] !== undefined){
+      console.log("also initializing 1台目...");
+      const out = execSync("curl -X POST http://192.168.0.11:8080/api/initialize");
+      console.log(out.toString());
+      // console.log("also initializing 3台目...");
+      // const out2 = execSync("curl -X POST http://192.168.0.13:8080/api/initialize");
+      // console.log(out2.toString());
+    }
     return c.json({ language: "node" });
   } catch (error) {
     console.log("init.sh failed with");
