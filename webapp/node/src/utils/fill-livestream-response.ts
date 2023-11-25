@@ -44,7 +44,7 @@ export const fillLivestreamResponse = async (
   if (ids.length) {
     const [tagsResult] = await conn.query<(TagsModel & RowDataPacket)[]>(
       "SELECT * FROM tags WHERE id IN (?)",
-      [[ids]]
+      [ids]
     );
     tags = tagsResult;
   }
