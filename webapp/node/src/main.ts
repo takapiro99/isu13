@@ -51,6 +51,14 @@ import {
 } from "./handlers/user-handler";
 import fs = require("fs");
 
+export const fallbackUserIconStatic = fs.readFileSync(
+  join(__dirname, "../../img/NoImage.jpg")
+).buffer;
+
+export const fallbackUserIconHashStatic = createHash("sha256")
+  .update(new Uint8Array(fallbackUserIconStatic))
+  .digest("hex");
+
 const runtime = {
   exec: async (cmd: string[]) =>
     new Promise((resolve, reject) => {

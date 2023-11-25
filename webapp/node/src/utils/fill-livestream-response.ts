@@ -37,9 +37,7 @@ export const fillLivestreamResponse = async (
   >("SELECT tag_id FROM livestream_tags WHERE livestream_id = ?", [
     livestream.id,
   ]);
-  console.log("livestreamTagIDs", livestreamTagIDs);
   const ids = livestreamTagIDs.map(({ tag_id }) => tag_id);
-  console.log("ids", ids);
   let tags: TagsModel[] = [];
   if (ids.length) {
     const [tagsResult] = await conn.query<(TagsModel & RowDataPacket)[]>(
@@ -48,7 +46,6 @@ export const fillLivestreamResponse = async (
     );
     tags = tagsResult;
   }
-  console.log("tags", tags);
   // add owner and tag
   return {
     id: livestream.id,
