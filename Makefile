@@ -43,7 +43,14 @@ slow-query:
 # alpでアクセスログを確認する
 .PHONY: alp
 alp:
-	sudo alp ltsv --file=/var/log/nginx/access.log -m "/api/courses/[0-9A-Z]+,/api/announcements/[0-9A-Z]+" > ~/local/logs/alp.log
+	sudo alp ltsv --file=/var/log/nginx/access.log -m "/api/livestream/[0-9a-zA-Z]+/livecomment/[0-9a-zA-Z]+/report,/api/livestream/[0-9a-zA-Z]+/livecomment,/api/livestream/[0-9a-zA-Z]+/reaction,/api/livestream/[0-9a-zA-Z]+/resetvation,/api/livestream/[0-9a-zA-Z]+/search,/api/livestream/[0-9a-zA-Z]+/livecomment,/api/livestream/[0-9a-zA-Z]+/reaction,/api/livestream/[0-9a-zA-Z]+/ngwords,/api/livestream/[0-9a-zA-Z]+/moderate,/api/livestream/[0-9a-zA-Z]+/enter,/api/livestream/[0-9a-zA-Z]+/exit,/api/livestream/[0-9a-zA-Z]+/statistics,/api/livestream/[0-9a-zA-Z]+,/api/user/[0-9a-zA-Z]+/statistics,/api/user/[0-9a-zA-Z]+/icon,/api/user/[0-9a-zA-Z]+" > ~/local/logs/alp.log
+	less ~/local/logs/alp.log
+
+# alp-raw
+.PHONY: alp-raw
+alp-raw:
+	sudo alp ltsv --file=/var/log/nginx/access.log > ~/local/logs/alp-raw.log
+	less ~/local/logs/alp-raw.log
 
 # pprofで記録する
 .PHONY: pprof-record
@@ -136,11 +143,12 @@ build:
 	npm install && npm run build
 
 .PHONY: restart
-restart:
+restart: rm-logs
 	sudo systemctl daemon-reload
 	sudo systemctl restart $(SERVICE_NAME)
 	sudo systemctl restart mysql
 	sudo systemctl restart nginx
+	sudo systemctl restart pdns
 
 .PHONY: mv-logs
 mv-logs:
@@ -161,14 +169,15 @@ rm-logs:
 	sudo rm -f /var/log/mysql/mysql-slow.log
 
 .PHONY: discord
-discord:
-	cd ~/local/log2discord && ./log2discord ~/local/logs/alp.log ~/local/logs/pt-query-digest.lo
-	cd ~/local/log2discord && ./log2discord ~/local/logs/pt-query-digest.lo
+discord: alp slow-query
+	cd ~/log2discord && ./log2discord ~/local/logs/alp.log
+	cd ~/log2discord && ./log2discord ~/local/logs/pt-query-digest.log
 
 .PHONY: bench11
 bench11: rm-logs restart alp slow-query build
 	git pull
 	cd ~/benchmarker/bin && ./benchmarker -target localhost:443 -tls
 
-# sudo systemctl status $(SERVICE_NAME)
-# sudo systemctl status isupipe-node.service
+.PHONY: node-status
+node-status: 
+	systemctl status $(SERVICE_NAME)
