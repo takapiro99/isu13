@@ -5,16 +5,16 @@ include env.sh
 
 # 問題によって変わる変数
 USER:=isucon
-BIN_NAME:= # TODO
-BUILD_DIR:=/home/isucon/webapp/ # TODO
-SERVICE_NAME:=$(BIN_NAME).go.service # TODO
+BIN_NAME:=isucholar
+BUILD_DIR:=/home/isucon/webapp/nodejs
+SERVICE_NAME:=$(BIN_NAME).nodejs.service
 
 DB_PATH:=/etc/mysql
 NGINX_PATH:=/etc/nginx
 SYSTEMD_PATH:=/etc/systemd/system
 
 NGINX_LOG:=/var/log/nginx/access.log
-DB_SLOW_LOG:=/var/log/mysql/mariadb-slow.log
+DB_SLOW_LOG:=/var/log/mysql/mysql-slow.log
 
 
 # メインで使うコマンド ------------------------
@@ -38,12 +38,12 @@ bench: check-server-id mv-logs build deploy-conf restart watch-service-log
 # slow queryを確認する
 .PHONY: slow-query
 slow-query:
-	sudo pt-query-digest $(DB_SLOW_LOG)
+	sudo pt-query-digest $(DB_SLOW_LOG) > ~/local/logs/pt-query-digest.log
 
 # alpでアクセスログを確認する
 .PHONY: alp
 alp:
-	sudo alp ltsv --file=$(NGINX_LOG) --config=/home/isucon/tool-config/alp/config.yml
+	sudo alp ltsv --file=/var/log/nginx/access.log -m "/api/courses/[0-9A-Z]+,/api/announcements/[0-9A-Z]+" > ~/local/logs/alp.log
 
 # pprofで記録する
 .PHONY: pprof-record
@@ -60,6 +60,12 @@ pprof-check:
 .PHONY: access-db
 access-db:
 	mysql -h $(MYSQL_HOST) -P $(MYSQL_PORT) -u $(MYSQL_USER) -p$(MYSQL_PASS) $(MYSQL_DBNAME)
+
+# 言語切替
+.PHONY: lan-change
+lan-change:
+	sudo systemctl disable --now $(BIN_NAME).go.service
+	sudo systemctl enable --now $(SERVICE_NAME)
 
 # 主要コマンドの構成要素 ------------------------
 
@@ -124,31 +130,15 @@ get-service-file:
 get-envsh:
 	cp ~/env.sh ~/$(SERVER_ID)/home/isucon/env.sh
 
-.PHONY: deploy-db-conf
-deploy-db-conf:
-	sudo cp -R ~/$(SERVER_ID)/etc/mysql/* $(DB_PATH)
-
-.PHONY: deploy-nginx-conf
-deploy-nginx-conf:
-	sudo cp -R ~/$(SERVER_ID)/etc/nginx/* $(NGINX_PATH)
-
-.PHONY: deploy-service-file
-deploy-service-file:
-	sudo cp ~/$(SERVER_ID)/etc/systemd/system/$(SERVICE_NAME) $(SYSTEMD_PATH)/$(SERVICE_NAME)
-
-.PHONY: deploy-envsh
-deploy-envsh:
-	cp ~/$(SERVER_ID)/home/isucon/env.sh ~/env.sh
-
 .PHONY: build
 build:
 	cd $(BUILD_DIR); \
-	go build -o $(BIN_NAME)
+	npm install && npm run build
 
 .PHONY: restart
 restart:
 	sudo systemctl daemon-reload
-	sudo systemctl restart $(SERVICE_NAME)
+	sudo systemctl restart $(BIN_NAME).nodejs.service
 	sudo systemctl restart mysql
 	sudo systemctl restart nginx
 
@@ -163,4 +153,19 @@ mv-logs:
 
 .PHONY: watch-service-log
 watch-service-log:
-	sudo journalctl -u $(SERVICE_NAME) -n10 -f
+	sudo journalctl -u $(SERVICE_NAME) -n30 -f
+
+.PHONY: rm-logs
+rm-logs:
+	sudo rm -f /var/log/nginx/access.log
+	sudo rm -f /var/log/mysql/mysql-slow.log
+
+.PHONY: discord
+discord:
+	cd ~/local/log2discord && ./log2discord ~/local/logs/alp.log ~/local/logs/pt-query-digest.lo
+	cd ~/local/log2discord && ./log2discord ~/local/logs/pt-query-digest.lo
+
+.PHONY: bench11
+bench11: rm-logs restart alp slow-query build
+	git pull
+	cd ~/benchmarker/bin && ./benchmarker -target localhost:443 -tls
