@@ -10,7 +10,6 @@ TRUNCATE TABLE livestream_tags;
 TRUNCATE TABLE livecomments;
 TRUNCATE TABLE livestreams;
 TRUNCATE TABLE users;
-
 ALTER TABLE `themes` auto_increment = 1;
 ALTER TABLE `icons` auto_increment = 1;
 ALTER TABLE `reservation_slots` auto_increment = 1;
@@ -23,5 +22,5 @@ ALTER TABLE `tags` auto_increment = 1;
 ALTER TABLE `livecomments` auto_increment = 1;
 ALTER TABLE `livestreams` auto_increment = 1;
 ALTER TABLE `users` auto_increment = 1;
-
-ALTER TABLE users ADD COLUMN `dark_mode` BOOLEAN NOT NULL IF NOT EXISTS;
+ALTER TABLE users
+ADD COLUMN IF NOT EXISTS `dark_mode` BOOLEAN NOT NULL;
