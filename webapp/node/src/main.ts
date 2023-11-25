@@ -52,6 +52,14 @@ import {
 import fs = require("fs");
 import { execSync } from "child_process";
 
+import { createClient } from "redis";
+
+export const rds = createClient();
+rds.connect().catch((e) => {
+  console.error(e);
+  throw e;
+});
+
 export const fallbackUserIconStatic = fs.readFileSync(
   join(__dirname, "../../img/NoImage.jpg")
 ).buffer;
@@ -153,6 +161,8 @@ app.post("/api/initialize", async (c) => {
         fs.unlinkSync(join(userImageDirectoryPath, file));
       }
     });
+    // delete all caches
+    rds.flushAll();
     if(process.env["ISUCON13_INIT_OTHER"] !== undefined){
       console.log("also initializing 1台目...");
       const out = execSync("curl -X POST http://192.168.0.11:8080/api/initialize");
