@@ -22,5 +22,13 @@ ALTER TABLE `tags` auto_increment = 1;
 ALTER TABLE `livecomments` auto_increment = 1;
 ALTER TABLE `livestreams` auto_increment = 1;
 ALTER TABLE `users` auto_increment = 1;
-ALTER TABLE users
-ADD COLUMN IF NOT EXISTS `dark_mode` BOOLEAN NOT NULL;
+IF NOT EXISTS(
+    SELECT NULL
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE table_name = 'users'
+        AND table_schema = 'isupipe'
+        AND column_name = 'dark_mode'
+) THEN
+ALTER TABLE `users`
+ADD `dark_mode` BOOLEAN NOT NULL;
+END IF;
