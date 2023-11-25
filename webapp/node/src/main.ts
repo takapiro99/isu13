@@ -153,7 +153,9 @@ app.post("/api/initialize", async (c) => {
         fs.unlinkSync(join(userImageDirectoryPath, file));
       }
     });
-    execSync("curl -X POST http://192.168.0.13:8080/api/initialize");
+    console.log("also initializing 3台目...");
+    const out = execSync("curl -X POST http://192.168.0.13:8080/api/initialize");
+    console.log(out);
     return c.json({ language: "node" });
   } catch (error) {
     console.log("init.sh failed with");
